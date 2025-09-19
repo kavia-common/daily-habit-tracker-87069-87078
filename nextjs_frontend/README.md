@@ -1,36 +1,52 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+This is a Next.js 14 app (App Router) integrated with Supabase for authentication and database.
 
 ## Getting Started
 
-First, run the development server:
+### 1) Prerequisites
+- Node.js 18+
+- A Supabase project
+- Environment variables configured in a `.env.local` file
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+Required env vars (must match Supabase project settings):
+```
+NEXT_PUBLIC_SUPABASE_URL=<your-supabase-project-url>
+NEXT_PUBLIC_SUPABASE_KEY=<your-supabase-anon-key>
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The app uses these variables in `src/lib/supabase/client.ts` and `src/lib/supabase/server.ts`. If they are missing, the client will throw a runtime error with a helpful message.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 2) Install and run
+```bash
+npm install
+npm run dev
+```
+Open http://localhost:3000.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 3) Configure Supabase database schema and RLS
+Use the Supabase SQL Editor in your project to apply the schema and policies found in the repository:
 
-## Learn More
+- Open Supabase web console > SQL Editor
+- Paste and run the contents of:
+  - ../../supabase/schema.sql
+  - ../../supabase/policies.sql
 
-To learn more about Next.js, take a look at the following resources:
+This creates the following tables and policies:
+- profiles (id references auth.users, created_at)
+- habits (per-user data with title, description, is_archived, frequency, color)
+- habit_logs (per-user logs keyed by habit, date, and status)
+- quotes (publicly readable active quotes)
+Row Level Security (RLS) is enabled so users can only read/write their own rows in habits and habit_logs. Profiles are self-scoped. Quotes are readable to authenticated users by default.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 4) Authentication
+The app supports email/password and Google OAuth via Supabase. Ensure the providers are enabled in your Supabase Auth settings. Auth state and route protection are implemented in:
+- src/hooks/useAuth.ts
+- src/app/(app)/layout.tsx
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 5) Project scripts
+- `npm run dev` start development server.
+- `npm run build` create production build.
+- `npm run start` run production build locally.
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Notes
+- The app uses a minimalist “Ocean Professional” theme. You can customize UI in `src/app/(app)` pages and `src/components/Navbar.tsx`.
+- When deploying, set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_KEY in your hosting provider’s environment settings.
