@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState, useEffect } from "react";
+import { FormEvent, useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -10,8 +10,7 @@ import { useAuth } from "@/hooks/useAuth";
  * Minimal login page offering magic link via email and Google OAuth.
  * Redirects to target page if already authenticated.
  */
-export default function LoginPage() {
-  /** This is a public function. */
+function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirect = searchParams.get("redirect") || "/dashboard";
@@ -48,7 +47,6 @@ export default function LoginPage() {
       setStatus("error");
       setErrorMsg(error.message);
     } else {
-      // Redirect handled by Supabase OAuth return; keep UI responsive
       setStatus("idle");
     }
   };
@@ -131,5 +129,14 @@ export default function LoginPage() {
         </p>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  /** This is a public function. */
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center text-gray-600">Loading...</div>}>
+      <LoginContent />
+    </Suspense>
   );
 }
