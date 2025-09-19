@@ -14,6 +14,9 @@ function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirect = searchParams.get("redirect") || "/dashboard";
+  // Normalize redirect to avoid empty or malformed values
+  const normalizedRedirect =
+    typeof redirect === "string" && redirect.trim().startsWith("/") ? redirect : "/dashboard";
   const { isAuthenticated, initializing, signInWithEmail, signInWithGoogle } = useAuth();
 
   const [email, setEmail] = useState("");
@@ -22,9 +25,9 @@ function LoginContent() {
 
   useEffect(() => {
     if (!initializing && isAuthenticated) {
-      router.replace(redirect);
+      router.replace(normalizedRedirect);
     }
-  }, [initializing, isAuthenticated, router, redirect]);
+  }, [initializing, isAuthenticated, router, normalizedRedirect]);
 
   const handleEmailSubmit = async (e: FormEvent) => {
     e.preventDefault();
