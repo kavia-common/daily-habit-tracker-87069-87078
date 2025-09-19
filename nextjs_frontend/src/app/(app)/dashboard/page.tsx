@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { SignedIn } from "@clerk/nextjs";
+import { SignedIn, useUser } from "@clerk/nextjs";
 import QuoteBanner from "@/components/QuoteBanner";
 import HabitCard from "@/components/HabitCard";
 import AddHabitModal from "@/components/AddHabitModal";
@@ -12,6 +12,9 @@ import { getLastNDates } from "@/lib/date";
 export default function DashboardPage() {
   // PUBLIC_INTERFACE
   /** Dashboard with quote banner, habits grid, daily toggling, streaks, and FAB for adding habits. */
+  const { user, isLoaded } = useUser();
+  const userId = user?.id ?? "";
+
   const [habits, setHabits] = useState<Habit[]>([]);
   const [logs, setLogs] = useState<HabitLog[]>([]);
   const [loading, setLoading] = useState(true);
@@ -22,10 +25,11 @@ export default function DashboardPage() {
   const end = days[days.length - 1];
 
   const refresh = async () => {
+    if (!userId) return;
     setLoading(true);
     const [{ data: hs }, { data: lg }] = await Promise.all([
-      fetchHabits(),
-      fetchHabitLogsForRange(start, end),
+      fetchHabits(userId),
+      fetchHabitLogsForRange(userId, start, end),
     ]);
     setHabits(hs);
     setLogs(lg);
@@ -33,9 +37,11 @@ export default function DashboardPage() {
   };
 
   useEffect(() => {
-    refresh();
+    if (isLoaded && userId) {
+      refresh();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [isLoaded, userId]);
 
   // Map habitId -> [dates...]
   const completedByHabit = useMemo(() => {
@@ -76,6 +82,7 @@ export default function DashboardPage() {
               {habits.map((h) => (
                 <HabitCard
                   key={h.id}
+                  userId={userId}
                   habit={h}
                   completedDates={completedByHabit.get(h.id) ?? []}
                   onChanged={refresh}
@@ -95,7 +102,7 @@ export default function DashboardPage() {
           +
         </button>
 
-        <AddHabitModal open={openAdd} onClose={() => setOpenAdd(false)} onCreated={refresh} />
+        <AddHabitModal userId={userId} open={openAdd} onClose={() => setOpenAdd(false)} onCreated={refresh} />
       </div>
     </SignedIn>
   );

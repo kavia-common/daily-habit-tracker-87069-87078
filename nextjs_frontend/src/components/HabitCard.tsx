@@ -8,10 +8,12 @@ import { toggleHabitForDay, deleteHabit } from "@/lib/dataClient";
 
 // PUBLIC_INTERFACE
 export default function HabitCard({
+  userId,
   habit,
   completedDates,
   onChanged,
 }: {
+  userId: string;
   habit: Habit;
   completedDates: string[]; // YYYY-MM-DD set for this habit
   onChanged: () => void; // refresh hook
@@ -24,7 +26,7 @@ export default function HabitCard({
 
   const handleToggle = async (day: string) => {
     setWorking(true);
-    const { error } = await toggleHabitForDay(habit.id, day);
+    const { error } = await toggleHabitForDay(userId, habit.id, day);
     setWorking(false);
     if (!error) onChanged();
     // Optional: toast error
@@ -33,7 +35,7 @@ export default function HabitCard({
   const handleDelete = async () => {
     if (!confirm(`Delete "${habit.title}"?`)) return;
     setWorking(true);
-    const { error } = await deleteHabit(habit.id);
+    const { error } = await deleteHabit(userId, habit.id);
     setWorking(false);
     if (!error) onChanged();
   };

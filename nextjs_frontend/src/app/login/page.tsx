@@ -2,6 +2,7 @@
 
 import { SignIn, SignedIn, SignedOut, useAuth } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 /**
  * PUBLIC_INTERFACE
@@ -16,10 +17,11 @@ export default function LoginPage() {
   const router = useRouter();
   const { isSignedIn } = useAuth();
 
-  if (isSignedIn) {
-    router.replace("/dashboard");
-    return null;
-  }
+  useEffect(() => {
+    if (isSignedIn) {
+      router.replace("/dashboard");
+    }
+  }, [isSignedIn, router]);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -106,7 +108,8 @@ export default function LoginPage() {
             </SignedOut>
 
             <SignedIn>
-              {router.replace("/dashboard")}
+              {/* Prevent rendering void in JSX; effect handles redirect */}
+              <div />
             </SignedIn>
 
             <p className="mt-4 text-xs text-gray-500 text-center">

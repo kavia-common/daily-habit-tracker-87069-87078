@@ -5,10 +5,12 @@ import { createHabit } from "@/lib/dataClient";
 
 // PUBLIC_INTERFACE
 export default function AddHabitModal({
+  userId,
   open,
   onClose,
   onCreated,
 }: {
+  userId: string;
   open: boolean;
   onClose: () => void;
   onCreated: () => void;
@@ -30,7 +32,7 @@ export default function AddHabitModal({
       return;
     }
     setSubmitting(true);
-    const { error } = await createHabit({ title: title.trim() });
+    const { error } = await createHabit(userId, { title: title.trim() });
     setSubmitting(false);
     if (error) {
       setError(error.message);

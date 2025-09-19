@@ -1,6 +1,6 @@
 "use client";
 
-import { SignedIn, SignedOut } from "@clerk/nextjs";
+import { SignedIn, SignedOut, useAuth } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
@@ -13,15 +13,21 @@ import { useEffect } from "react";
  */
 export default function Home() {
   const router = useRouter();
+  const { isSignedIn } = useAuth();
 
   useEffect(() => {
-    // No-op: actual content based on SignedIn/SignedOut below
-  }, []);
+    if (isSignedIn) {
+      router.replace("/dashboard");
+    } else {
+      router.replace("/login");
+    }
+  }, [isSignedIn, router]);
 
   return (
     <main className="min-h-screen flex items-center justify-center text-gray-600">
-      <SignedIn>{router.replace("/dashboard")}</SignedIn>
-      <SignedOut>{router.replace("/login")}</SignedOut>
+      {/* Render small placeholders to satisfy ReactNode without returning void */}
+      <SignedIn><div /></SignedIn>
+      <SignedOut><div /></SignedOut>
     </main>
   );
 }
