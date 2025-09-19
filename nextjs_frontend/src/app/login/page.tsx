@@ -35,7 +35,12 @@ function LoginContent() {
     const { error } = await signInWithEmail(email);
     if (error) {
       setStatus("error");
-      setErrorMsg(error.message);
+      const raw = error.message || "";
+      const friendly =
+        raw.includes("not configured") || raw.includes("Missing NEXT_PUBLIC")
+          ? "Authentication is temporarily unavailable due to missing configuration. Please try again later."
+          : raw || "Failed to send magic link. Please try again.";
+      setErrorMsg(friendly);
     } else {
       setStatus("sent");
     }
@@ -47,7 +52,12 @@ function LoginContent() {
     const { error } = await signInWithGoogle();
     if (error) {
       setStatus("error");
-      setErrorMsg(error.message);
+      const raw = error.message || "";
+      const friendly =
+        raw.includes("not configured") || raw.includes("Missing NEXT_PUBLIC")
+          ? "Google sign-in is unavailable due to missing configuration. Please contact the administrator."
+          : raw || "Failed to start Google sign-in. Please try again.";
+      setErrorMsg(friendly);
     } else {
       setStatus("idle");
     }
