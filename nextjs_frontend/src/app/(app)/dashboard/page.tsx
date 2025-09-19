@@ -8,6 +8,7 @@ import AddHabitModal from "@/components/AddHabitModal";
 import { fetchHabits, fetchHabitLogsForRange } from "@/lib/dataClient";
 import type { Habit, HabitLog } from "@/lib/types";
 import { getLastNDates } from "@/lib/date";
+import AnalyticsPanel from "@/components/AnalyticsPanel";
 
 export default function DashboardPage() {
   // PUBLIC_INTERFACE
@@ -20,16 +21,19 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [openAdd, setOpenAdd] = useState(false);
 
-  const days = useMemo(() => getLastNDates(7), []);
-  const start = days[0];
-  const end = days[days.length - 1];
+  const analyticsDays = useMemo(() => getLastNDates(30), []);
+  // kept for 7-day UI rendering; analytics has its own range
+  // const start = days[0];
+  // const end = days[days.length - 1];
+  const analyticsStart = analyticsDays[0];
+  const analyticsEnd = analyticsDays[analyticsDays.length - 1];
 
   const refresh = async () => {
     if (!userId) return;
     setLoading(true);
     const [{ data: hs }, { data: lg }] = await Promise.all([
       fetchHabits(userId),
-      fetchHabitLogsForRange(userId, start, end),
+      fetchHabitLogsForRange(userId, analyticsStart, analyticsEnd),
     ]);
     setHabits(hs);
     setLogs(lg);
@@ -98,6 +102,11 @@ export default function DashboardPage() {
               ))}
             </div>
           )}
+        </section>
+
+        {/* Analytics / Insights */}
+        <section>
+          <AnalyticsPanel habits={habits} logs={logs} />
         </section>
 
         {/* Floating Action Button */}
