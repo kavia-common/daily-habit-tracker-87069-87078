@@ -61,7 +61,14 @@ export default function DashboardPage() {
 
         <section className="o-card p-6">
           <div className="flex items-center justify-between">
-            <h3 className="text-base font-medium" style={{ color: "var(--color-primary)" }}>Your Habits</h3>
+            <div>
+              <h3 className="text-base font-semibold" style={{ color: "var(--color-primary)" }}>
+                Your Habits
+              </h3>
+              <p className="mt-1 text-sm" style={{ color: "var(--color-secondary)" }}>
+                Keep the momentum. Tiny progress every day.
+              </p>
+            </div>
             <button
               onClick={() => setOpenAdd(true)}
               className="o-btn o-btn-primary"
@@ -80,27 +87,33 @@ export default function DashboardPage() {
           ) : (
             <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {habits.map((h) => (
-                <HabitCard
-                  key={h.id}
-                  userId={userId}
-                  habit={h}
-                  completedDates={completedByHabit.get(h.id) ?? []}
-                  onChanged={refresh}
-                />
+                <div key={h.id} className="transition-transform duration-200 hover:-translate-y-0.5">
+                  <HabitCard
+                    userId={userId}
+                    habit={h}
+                    completedDates={completedByHabit.get(h.id) ?? []}
+                    onChanged={refresh}
+                  />
+                </div>
               ))}
             </div>
           )}
         </section>
 
         {/* Floating Action Button */}
-        <button
-          onClick={() => setOpenAdd(true)}
-          className="fixed bottom-6 right-6 h-14 w-14 rounded-full bg-gray-900 text-white text-2xl shadow-lg hover:bg-gray-800 fab-pulse"
-          aria-label="Add habit"
-          title="Add habit"
-        >
-          +
-        </button>
+        <div className="fixed bottom-6 right-6">
+          <button
+            onClick={() => setOpenAdd(true)}
+            className="h-14 w-14 rounded-full bg-gray-900 text-white text-2xl shadow-lg hover:bg-gray-800 fab-pulse relative"
+            aria-label="Add habit"
+            title="Add habit"
+          >
+            +
+            <span className="absolute -top-9 right-0 whitespace-nowrap text-xs bg-black text-white px-2 py-1 rounded opacity-90 hidden sm:block">
+              Add habit
+            </span>
+          </button>
+        </div>
 
         <AddHabitModal userId={userId} open={openAdd} onClose={() => setOpenAdd(false)} onCreated={refresh} />
       </div>

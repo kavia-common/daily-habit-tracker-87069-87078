@@ -28,7 +28,10 @@ export default function LoginPage() {
       {/* Header */}
       <header className="w-full">
         <div className="mx-auto max-w-7xl px-6 py-6 flex items-center gap-3">
-          <div className="h-9 w-9 rounded-lg bg-gray-900 text-white flex items-center justify-center shadow-sm">
+          <div
+            className="h-9 w-9 rounded-lg flex items-center justify-center shadow-sm"
+            style={{ background: "var(--color-accent)", color: "var(--color-accent-contrast)" }}
+          >
             <span className="text-sm font-semibold select-none">HF</span>
           </div>
           <div>
@@ -39,7 +42,7 @@ export default function LoginPage() {
       </header>
 
       {/* Hero + Card */}
-      <main className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-6 items-center mx-auto w-full max-w-7xl px-6 py-10">
+      <main className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-6 items-center mx-auto w-full max-w-7xl px-6 py-10 o-gradient rounded-t-[32px]">
         {/* Left: Visual / Charts */}
         <section className="order-2 lg:order-1">
           <div className="o-card p-6 overflow-hidden">

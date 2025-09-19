@@ -87,9 +87,12 @@ export default function AddHabitModal({
         }}
       >
         <div
-          className="flex items-center justify-between px-4 py-3"
-          style={{ borderBottom: "1px solid var(--color-border)" }}
+          className="flex items-center justify-between px-4 py-3 sticky top-0 bg-transparent"
+          style={{ borderBottom: "1px solid var(--color-border)", boxShadow: "0 1px 0 rgba(255,255,255,0.6)" }}
         >
+          <div className="absolute left-1/2 -translate-x-1/2 -top-2 sm:hidden">
+            <div className="h-1.5 w-12 rounded-full bg-gray-300" aria-hidden />
+          </div>
           <h3 className="text-base font-semibold" style={{ color: "var(--color-primary)" }}>
             Add a habit
           </h3>

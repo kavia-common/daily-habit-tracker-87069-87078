@@ -127,7 +127,7 @@ export default function HabitCard({
 
         <button
           onClick={handleDelete}
-          className="rounded-md px-2 py-1 text-xs transition-colors hover:bg-gray-50"
+          className="rounded-md px-2 py-1 text-xs transition-colors hover:bg-gray-50 active:scale-[0.98]"
           style={{ color: "var(--color-secondary)" }}
           aria-label={`Delete ${habit.title}`}
           title="Delete habit"

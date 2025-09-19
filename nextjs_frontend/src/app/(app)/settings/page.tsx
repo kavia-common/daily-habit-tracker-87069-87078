@@ -17,7 +17,7 @@ export default function SettingsPage() {
       <section className="o-card p-6">
         <h2 className="text-lg font-semibold" style={{ color: "var(--color-primary)" }}>Settings</h2>
         <p className="mt-1 text-sm" style={{ color: "var(--color-secondary)" }}>
-          Manage your account preferences. Minimal, Ocean Professional theme.
+          Manage your account preferences and preview the Ocean Professional theme.
         </p>
       </section>
 
@@ -25,6 +25,9 @@ export default function SettingsPage() {
       <section className="o-card p-6 space-y-6">
         <div>
           <h3 className="text-base font-medium" style={{ color: "var(--color-primary)" }}>Account</h3>
+          <p className="mt-1 text-sm" style={{ color: "var(--color-secondary)" }}>
+            Your core account details powered by Clerk.
+          </p>
           <div className="mt-4 grid gap-4 sm:grid-cols-2">
             <div className="rounded-md p-4" style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)" }}>
               <p className="text-xs uppercase tracking-wide" style={{ color: "var(--color-secondary)" }}>Email</p>
@@ -93,7 +96,7 @@ export default function SettingsPage() {
         >
           <p className="text-sm font-medium">Preview</p>
           <p
-            className={`mt-1 text_sm ${
+            className={`mt-1 text-sm ${
               themePreview === "dark" ? "text-gray-300" : "text-gray-600"
             }`}
           >
