@@ -41,6 +41,10 @@
   --font-sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans",
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   --leading-tight: 1.25;
+
+  /* Motion */
+  --motion-fast: 160ms cubic-bezier(.2,.8,.2,1);
+  --motion-medium: 260ms cubic-bezier(.2,.8,.2,1);
 }
 
 /* Dark scheme support (preview only; not actively switched in code) */
@@ -92,6 +96,11 @@ a {
 
 button {
   cursor: pointer;
+  transition: transform var(--motion-fast), box-shadow var(--motion-fast);
+}
+
+button:active {
+  transform: translateY(0.5px);
 }
 
 /* Utility bridges using CSS variables to keep Tailwind semantics aligned */
@@ -126,7 +135,7 @@ button {
   font-weight: 600;
   font-size: 0.875rem;
   line-height: 1.25rem;
-  transition: background-color 160ms ease, color 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+  transition: background-color var(--motion-fast), color var(--motion-fast), border-color var(--motion-fast), box-shadow var(--motion-fast), transform var(--motion-fast);
 }
 
 .o-btn-primary {
@@ -136,6 +145,7 @@ button {
 
 .o-btn-primary:hover {
   filter: brightness(0.95);
+  box-shadow: 0 6px 16px rgba(55, 65, 81, 0.15);
 }
 
 .o-btn-outline {
@@ -168,6 +178,7 @@ textarea {
   background: #fff;
   color: var(--color-primary);
   outline: none;
+  transition: border-color var(--motion-fast), box-shadow var(--motion-fast);
 }
 
 input::placeholder,
@@ -178,7 +189,7 @@ textarea::placeholder {
 input:focus,
 textarea:focus {
   border-color: #D1D5DB;
-  box-shadow: none;
+  box-shadow: 0 0 0 2px rgba(209, 213, 219, 0.4);
 }
 
 /* Small helper for rings using border color token */
@@ -186,4 +197,15 @@ textarea:focus {
   outline: 2px solid transparent;
   outline-offset: 2px;
   box-shadow: 0 0 0 2px var(--color-border);
+}
+
+/* Floating action button pulse (opt-in via class) */
+.fab-pulse {
+  animation: fabPulse 2.4s ease-in-out infinite;
+}
+
+@keyframes fabPulse {
+  0% { box-shadow: 0 0 0 0 rgba(55, 65, 81, 0.25); }
+  70% { box-shadow: 0 0 0 12px rgba(55, 65, 81, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(55, 65, 81, 0); }
 }
