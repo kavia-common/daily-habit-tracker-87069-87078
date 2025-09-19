@@ -59,10 +59,13 @@ export default function HabitCard({
   const isToday = (d: string) => d === todayYYYYMMDD();
 
   // Build sparkline points array from last 7 days (1 = done, 0 = not)
-  const spark = days.map((d) => (hasCompleted(set, d) ? 1 : 0));
+  const spark = useMemo(() => days.map((d) => (hasCompleted(set, d) ? 1 : 0)), [days, set]);
   const sparkHeight = 24;
   const sparkWidth = 80;
-  const step = spark.length > 1 ? sparkWidth / (spark.length - 1) : sparkWidth;
+  const step = useMemo(
+    () => (spark.length > 1 ? sparkWidth / (spark.length - 1) : sparkWidth),
+    [spark.length, sparkWidth]
+  );
 
   const sparkPath = useMemo(() => {
     if (spark.length === 0) return "";
@@ -73,7 +76,7 @@ export default function HabitCard({
       return `${x},${y}`;
     });
     return `M ${points[0]} L ${points.slice(1).join(" ")}`;
-  }, [spark.join(","), step]);
+  }, [spark, step, sparkHeight]);
 
   return (
     <div

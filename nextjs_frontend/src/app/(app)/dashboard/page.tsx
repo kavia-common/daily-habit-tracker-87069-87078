@@ -95,7 +95,7 @@ export default function DashboardPage() {
         {/* Floating Action Button */}
         <button
           onClick={() => setOpenAdd(true)}
-          className="fixed bottom-6 right-6 h-14 w-14 rounded-full bg-gray-900 text-white text-2xl shadow-lg hover:bg-gray-800"
+          className="fixed bottom-6 right-6 h-14 w-14 rounded-full bg-gray-900 text-white text-2xl shadow-lg hover:bg-gray-800 fab-pulse"
           aria-label="Add habit"
           title="Add habit"
         >
