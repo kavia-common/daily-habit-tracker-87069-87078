@@ -1,32 +1,27 @@
 "use client";
 
-import { useEffect } from "react";
+import { SignedIn, SignedOut } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/hooks/useAuth";
+import { useEffect } from "react";
 
 /**
  * PUBLIC_INTERFACE
  * Home
- * Entry route that redirects users based on authentication status.
- * - Authenticated: go to /dashboard
- * - Unauthenticated: go to /login
+ * Redirects users based on Clerk session:
+ * - Signed in -> /dashboard
+ * - Signed out -> /login
  */
 export default function Home() {
   const router = useRouter();
-  const { isAuthenticated, initializing } = useAuth();
 
   useEffect(() => {
-    if (initializing) return;
-    if (isAuthenticated) {
-      router.replace("/dashboard");
-    } else {
-      router.replace("/login");
-    }
-  }, [initializing, isAuthenticated, router]);
+    // No-op: actual content based on SignedIn/SignedOut below
+  }, []);
 
   return (
     <main className="min-h-screen flex items-center justify-center text-gray-600">
-      Loading...
+      <SignedIn>{router.replace("/dashboard")}</SignedIn>
+      <SignedOut>{router.replace("/login")}</SignedOut>
     </main>
   );
 }

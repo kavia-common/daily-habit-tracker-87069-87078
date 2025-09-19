@@ -1,52 +1,12 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { useAuth } from "@/hooks/useAuth";
-import { getSupabaseClient } from "@/lib/supabase/client";
-import { getURL } from "@/utils/getURL";
+import { useState } from "react";
+import { useUser, UserProfile } from "@clerk/nextjs";
 
 // PUBLIC_INTERFACE
 export default function SettingsPage() {
-  /** Settings page shows account information, password reset link, account deletion placeholder, and a theme preview toggle. */
-  const { user } = useAuth();
-
-  // Prepare a password reset handler using Supabase
-  const supabase = useMemo(() => {
-    try {
-      return getSupabaseClient();
-    } catch {
-      return null;
-    }
-  }, []);
-
-  const [resetState, setResetState] = useState<"idle" | "sending" | "sent" | "error">("idle");
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
-
-  const handleSendPasswordReset = async () => {
-    if (!supabase) {
-      setErrorMsg("Supabase client not configured.");
-      setResetState("error");
-      return;
-    }
-    if (!user?.email) {
-      setErrorMsg("No email is associated with this account.");
-      setResetState("error");
-      return;
-    }
-    setErrorMsg(null);
-    setResetState("sending");
-    const url = getURL();
-    // Supabase email password reset flow
-    const { error } = await supabase.auth.resetPasswordForEmail(user.email, {
-      redirectTo: `${url}login`,
-    });
-    if (error) {
-      setErrorMsg(error.message);
-      setResetState("error");
-    } else {
-      setResetState("sent");
-    }
-  };
+  /** Settings page shows account information and theme preview using Clerk user data. */
+  const { user } = useUser();
 
   // Optional theme preview toggle (local-only)
   const [themePreview, setThemePreview] = useState<"light" | "dark">("light");
@@ -62,37 +22,33 @@ export default function SettingsPage() {
       </section>
 
       {/* Account Info */}
-      <section className="o-card p-6">
-        <h3 className="text-base font-medium" style={{ color: "var(--color-primary)" }}>Account</h3>
-        <div className="mt-4 grid gap-4 sm:grid-cols-2">
-          <div className="rounded-md p-4" style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)" }}>
-            <p className="text-xs uppercase tracking-wide" style={{ color: "var(--color-secondary)" }}>Email</p>
-            <p className="mt-1 text-sm font-medium" style={{ color: "var(--color-primary)" }}>
-              {user?.email ?? "Unknown"}
-            </p>
-          </div>
-          <div className="rounded-md p-4" style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)" }}>
-            <p className="text-xs uppercase tracking-wide" style={{ color: "var(--color-secondary)" }}>User ID</p>
-            <p className="mt-1 truncate text-sm" style={{ color: "var(--color-primary)" }}>
-              {user?.id ?? "—"}
-            </p>
+      <section className="o-card p-6 space-y-6">
+        <div>
+          <h3 className="text-base font-medium" style={{ color: "var(--color-primary)" }}>Account</h3>
+          <div className="mt-4 grid gap-4 sm:grid-cols-2">
+            <div className="rounded-md p-4" style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)" }}>
+              <p className="text-xs uppercase tracking-wide" style={{ color: "var(--color-secondary)" }}>Email</p>
+              <p className="mt-1 text-sm font-medium" style={{ color: "var(--color-primary)" }}>
+                {user?.primaryEmailAddress?.emailAddress ?? "Unknown"}
+              </p>
+            </div>
+            <div className="rounded-md p-4" style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)" }}>
+              <p className="text-xs uppercase tracking-wide" style={{ color: "var(--color-secondary)" }}>User ID</p>
+              <p className="mt-1 truncate text-sm" style={{ color: "var(--color-primary)" }}>
+                {user?.id ?? "—"}
+              </p>
+            </div>
           </div>
         </div>
 
-        <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
-          <button
-            onClick={handleSendPasswordReset}
-            disabled={resetState === "sending"}
-            className="o-btn o-btn-outline disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            {resetState === "sending" ? "Sending..." : "Send password reset link"}
-          </button>
-          {resetState === "sent" && (
-            <span className="text-sm" style={{ color: "var(--color-success)" }}>Reset email sent. Check your inbox.</span>
-          )}
-          {resetState === "error" && errorMsg && (
-            <span className="text-sm" style={{ color: "var(--color-error)" }}>{errorMsg}</span>
-          )}
+        {/* Embedded Clerk user profile management */}
+        <div className="rounded-lg border border-gray-200 p-4">
+          <UserProfile
+            appearance={{
+              variables: { colorPrimary: "#111827" },
+              elements: { card: "shadow-none" },
+            }}
+          />
         </div>
       </section>
 
@@ -137,7 +93,7 @@ export default function SettingsPage() {
         >
           <p className="text-sm font-medium">Preview</p>
           <p
-            className={`mt-1 text-sm ${
+            className={`mt-1 text_sm ${
               themePreview === "dark" ? "text-gray-300" : "text-gray-600"
             }`}
           >
@@ -145,9 +101,7 @@ export default function SettingsPage() {
           </p>
           <div className="mt-3 h-2 w-full rounded-full bg-gray-200">
             <div
-              className={`h-2 rounded-full ${
-                themePreview === "dark" ? "bg-emerald-500" : "bg-emerald-500"
-              }`}
+              className={`h-2 rounded-full bg-emerald-500`}
               style={{ width: "45%" }}
             />
           </div>

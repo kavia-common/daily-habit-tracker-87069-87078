@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { SignedIn } from "@clerk/nextjs";
 import QuoteBanner from "@/components/QuoteBanner";
 import HabitCard from "@/components/HabitCard";
 import AddHabitModal from "@/components/AddHabitModal";
@@ -48,52 +49,56 @@ export default function DashboardPage() {
   }, [habits, logs]);
 
   return (
-    <div className="space-y-6 relative">
-      <QuoteBanner />
+    <SignedIn>
+      <div className="space-y-6 relative">
+        <QuoteBanner />
 
-      <section className="o-card p-6">
-        <div className="flex items-center justify-between">
-          <h3 className="text-base font-medium" style={{ color: "var(--color-primary)" }}>Your Habits</h3>
-          <button
-            onClick={() => setOpenAdd(true)}
-            className="o-btn o-btn-primary"
-            aria-label="Add habit"
-          >
-            + Add
-          </button>
-        </div>
-
-        {loading ? (
-          <p className="mt-4 text-sm text-gray-600">Loading...</p>
-        ) : habits.length === 0 ? (
-          <p className="mt-4 text-sm text-gray-600">
-            No habits yet. Click “+ Add” to create your first habit.
-          </p>
-        ) : (
-          <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {habits.map((h) => (
-              <HabitCard
-                key={h.id}
-                habit={h}
-                completedDates={completedByHabit.get(h.id) ?? []}
-                onChanged={refresh}
-              />
-            ))}
+        <section className="o-card p-6">
+          <div className="flex items-center justify-between">
+            <h3 className="text-base font-medium" style={{ color: "var(--color-primary)" }}>Your Habits</h3>
+            <button
+              onClick={() => setOpenAdd(true)}
+              className="o-btn o-btn-primary"
+              aria-label="Add habit"
+            >
+              + Add
+            </button>
           </div>
-        )}
-      </section>
 
-      {/* Floating Action Button */}
-      <button
-        onClick={() => setOpenAdd(true)}
-        className="fixed bottom-6 right-6 h-14 w-14 rounded-full bg-gray-900 text-white text-2xl shadow-lg hover:bg-gray-800"
-        aria-label="Add habit"
-        title="Add habit"
-      >
-        +
-      </button>
+          {loading ? (
+            <p className="mt-4 text-sm text-gray-600">Loading...</p>
+          ) : habits.length === 0 ? (
+            <p className="mt-4 text-sm text-gray-600">
+              No habits yet. Click “+ Add” to create your first habit.
+            </p>
+          ) : (
+            <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {habits.map((h) => (
+                <HabitCard
+                  key={h.id}
+                  habit={h}
+                  completedDates={completedByHabit.get(h.id) ?? []}
+                  onChanged={refresh}
+                />
+              ))}
+            </div>
+          )}
+        </section>
 
-      <AddHabitModal open={openAdd} onClose={() => setOpenAdd(false)} onCreated={refresh} />
-    </div>
+        {/* Floating Action Button */}
+        <button
+          onClick={() => setOpenAdd(true)}
+          className="fixed bottom-6 right-6 h-14 w-14 rounded-full bg-gray-900 text-white text-2xl shadow-lg hover:bg-gray-800"
+          aria-label="Add habit"
+          title="Add habit"
+        >
+          +
+        </button>
+
+        <AddHabitModal open={openAdd} onClose={() => setOpenAdd(false)} onCreated={refresh} />
+      </div>
+    </SignedIn>
   );
 }
+
+

@@ -1,207 +1,124 @@
 "use client";
 
-import { FormEvent, useState, useEffect, Suspense } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useAuth } from "@/hooks/useAuth";
+import { SignIn, SignedIn, SignedOut, useAuth } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 
 /**
  * PUBLIC_INTERFACE
  * LoginPage
- * Minimal login page offering magic link via email and Google OAuth.
- * Redirects to target page if already authenticated.
+ * A sleek, car-themed, emoji-rich sign-in experience powered by Clerk.
+ * - Shows a modern hero with playful but professional car visuals and streak charts
+ * - Renders Clerk SignIn with email/passwordless/providers
+ * - Redirects to dashboard when already signed in
  */
-function LoginContent() {
+export default function LoginPage() {
+  /** This is a public function. */
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const redirect = searchParams.get("redirect") || "/dashboard";
-  const normalizedRedirect =
-    typeof redirect === "string" && redirect.trim().startsWith("/") ? redirect : "/dashboard";
-  const { isAuthenticated, initializing, signInWithEmail, signInWithGoogle } = useAuth();
+  const { isSignedIn } = useAuth();
 
-  const [email, setEmail] = useState("");
-  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!initializing && isAuthenticated) {
-      router.replace(normalizedRedirect);
-    }
-  }, [initializing, isAuthenticated, router, normalizedRedirect]);
-
-  const handleEmailSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    setStatus("sending");
-    setErrorMsg(null);
-    const { error } = await signInWithEmail(email);
-    if (error) {
-      setStatus("error");
-      const raw = error.message || "";
-      const friendly =
-        raw.includes("not configured") || raw.includes("Missing NEXT_PUBLIC")
-          ? "Authentication is temporarily unavailable due to missing configuration. Please try again later."
-          : raw || "Failed to send magic link. Please try again.";
-      setErrorMsg(friendly);
-    } else {
-      setStatus("sent");
-    }
-  };
-
-  const handleGoogle = async () => {
-    setStatus("sending");
-    setErrorMsg(null);
-    const { error } = await signInWithGoogle();
-    if (error) {
-      setStatus("error");
-      const raw = error.message || "";
-      const friendly =
-        raw.includes("not configured") || raw.includes("Missing NEXT_PUBLIC")
-          ? "Google sign-in is unavailable due to missing configuration. Please contact the administrator."
-          : raw || "Failed to start Google sign-in. Please try again.";
-      setErrorMsg(friendly);
-    } else {
-      setStatus("idle");
-    }
-  };
-
-  // Loading skeleton for initialization
-  if (initializing) {
-    return (
-      <div className="min-h-screen flex items-center justify-center text-gray-500">
-        <div
-          aria-hidden
-          className="h-10 w-10 rounded-full border-2 border-gray-300 border-t-gray-600 animate-spin"
-        />
-      </div>
-    );
-  }
-
-  if (isAuthenticated) {
+  if (isSignedIn) {
+    router.replace("/dashboard");
     return null;
   }
 
   return (
-    <div className="min-h-screen o-gradient flex flex-col">
-      {/* Top brand header */}
+    <div className="min-h-screen flex flex-col">
+      {/* Header */}
       <header className="w-full">
-        <div className="mx-auto max-w-7xl px-6 py-8">
-          <div className="flex items-center gap-3">
-            <div className="h-9 w-9 rounded-lg bg-gray-900/90 text-white flex items-center justify-center shadow-sm">
-              <span className="text-sm font-semibold select-none">HF</span>
-            </div>
-            <div>
-              <h1 className="text-xl font-semibold text-gray-900">HabitFlow</h1>
-              <p className="text-sm text-gray-500">Minimal daily habit tracker</p>
-            </div>
+        <div className="mx-auto max-w-7xl px-6 py-6 flex items-center gap-3">
+          <div className="h-9 w-9 rounded-lg bg-gray-900 text-white flex items-center justify-center shadow-sm">
+            <span className="text-sm font-semibold select-none">HF</span>
+          </div>
+          <div>
+            <h1 className="text-xl font-semibold text-gray-900">HabitFlow</h1>
+            <p className="text-sm text-gray-500">Track better. Drive daily progress.</p>
           </div>
         </div>
       </header>
 
-      {/* Content */}
-      <main className="flex-1 flex items-center justify-center px-6 pb-16 pt-2">
-        <div className="w-full max-w-md">
-          {/* Elevated card */}
-          <div className="o-card relative overflow-hidden">
-            {/* Subtle decorative top bar */}
-            <div className="absolute inset-x-0 top-0 h-1 bg-gray-900/90" />
+      {/* Hero + Card */}
+      <main className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-6 items-center mx-auto w-full max-w-7xl px-6 py-10">
+        {/* Left: Visual / Charts */}
+        <section className="order-2 lg:order-1">
+          <div className="o-card p-6 overflow-hidden">
+            <div className="flex items-center gap-3">
+              <span className="text-3xl" aria-hidden>🚗</span>
+              <div>
+                <h2 className="text-lg font-semibold text-gray-900">Your daily drive to great habits</h2>
+                <p className="text-sm text-gray-500">Smooth, minimalist, and blazing fast.</p>
+              </div>
+            </div>
 
-            <div className="p-6 sm:p-8">
-              <div className="mb-6">
-                <h2 className="text-2xl font-semibold text-gray-900">Sign in</h2>
-                <p className="mt-2 text-sm text-gray-500">
-                  Welcome back. Continue with your email or Google.
-                </p>
+            {/* Simple chart placeholders */}
+            <div className="mt-6 grid gap-4 sm:grid-cols-2">
+              <div className="rounded-lg border border-gray-200 p-4">
+                <p className="text-sm text-gray-500">Streak meter</p>
+                <div className="mt-2 h-2 w-full bg-gray-200 rounded-full">
+                  <div className="h-2 rounded-full bg-emerald-500" style={{ width: "72%" }} />
+                </div>
+                <p className="mt-2 text-xs text-gray-500">🔥 21-day streak</p>
               </div>
 
-              <form onSubmit={handleEmailSubmit} className="space-y-4" noValidate>
-                <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                    Email address
-                  </label>
-                  <div className="mt-2 relative">
-                    <input
-                      id="email"
-                      type="email"
-                      required
-                      inputMode="email"
-                      autoComplete="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="you@example.com"
-                      className="block w-full rounded-md border o-border px-3 py-2.5 text-gray-900 placeholder-gray-400 transition-[border,box-shadow] focus:border-gray-400 focus:outline-none focus:ring-0"
-                    />
-                    {/* Micro-interaction: focus border cue handled via transition */}
-                  </div>
-                  <p className="mt-2 text-xs text-gray-500">
-                    We&apos;ll send you a secure, time-limited sign-in link.
-                  </p>
+              <div className="rounded-lg border border-gray-200 p-4">
+                <p className="text-sm text-gray-500">Weekly momentum</p>
+                <div className="mt-3 flex items-end gap-2 h-20">
+                  {[40, 70, 55, 85, 65, 90, 60].map((h, i) => (
+                    <div key={i} className="w-5 rounded-t bg-gray-900/80" style={{ height: `${h}%` }} />
+                  ))}
                 </div>
-
-                <button
-                  type="submit"
-                  disabled={status === "sending"}
-                  className="o-btn o-btn-primary w-full disabled:opacity-60"
-                >
-                  {status === "sending" ? "Sending..." : "Send magic link"}
-                </button>
-              </form>
-
-              <div className="my-6 flex items-center gap-3">
-                <div className="h-px flex-1 bg-gray-200" />
-                <span className="text-xs text-gray-500">or</span>
-                <div className="h-px flex-1 bg-gray-200" />
+                <p className="mt-2 text-xs text-gray-500">📈 Consistency on the rise</p>
               </div>
+            </div>
 
-              <button
-                onClick={handleGoogle}
-                disabled={status === "sending"}
-                className="o-btn o-btn-outline w-full disabled:opacity-60"
-              >
-                Continue with Google
-              </button>
-
-              {status === "sent" && (
-                <div
-                  role="status"
-                  className="mt-5 flex items-start gap-2 rounded-md border border-green-200 bg-green-50 px-3 py-2 text-sm text-green-700"
-                >
-                  <span className="mt-0.5 h-2.5 w-2.5 rounded-full bg-green-500" aria-hidden />
-                  <p>Magic link sent! Please check your email.</p>
-                </div>
-              )}
-              {status === "error" && errorMsg && (
-                <div
-                  role="alert"
-                  className="mt-5 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700"
-                >
-                  {errorMsg}
-                </div>
-              )}
+            <div className="mt-6 rounded-md bg-gray-50 border border-gray-200 p-4">
+              <p className="text-sm text-gray-600">
+                Pro tip: Tiny wins compound. Start your engine and keep it rolling. 🏁
+              </p>
             </div>
           </div>
+        </section>
 
-          <p className="mt-6 text-center text-xs text-gray-500">
-            By continuing you agree to our Terms and Privacy Policy.
-          </p>
-        </div>
+        {/* Right: Clerk SignIn */}
+        <section className="order-1 lg:order-2">
+          <div className="o-card p-6">
+            <div className="mb-4">
+              <h2 className="text-2xl font-semibold text-gray-900">Sign in</h2>
+              <p className="text-sm text-gray-500">Welcome back! Continue your journey.</p>
+            </div>
+
+            <SignedOut>
+              <SignIn
+                signUpUrl="/login"
+                fallbackRedirectUrl="/dashboard"
+                forceRedirectUrl="/dashboard"
+                appearance={{
+                  variables: {
+                    colorPrimary: "#111827",
+                    colorText: "#111827",
+                    colorBackground: "#FFFFFF",
+                  },
+                  elements: {
+                    formButtonPrimary: "o-btn o-btn-primary",
+                    card: "shadow-none border border-gray-200 rounded-lg",
+                  },
+                }}
+              />
+            </SignedOut>
+
+            <SignedIn>
+              {router.replace("/dashboard")}
+            </SignedIn>
+
+            <p className="mt-4 text-xs text-gray-500 text-center">
+              By continuing you agree to our Terms and Privacy Policy.
+            </p>
+          </div>
+        </section>
       </main>
 
-      {/* Footer spacing for balance */}
-      <footer aria-hidden className="pb-8" />
+      <footer className="py-6 text-center text-xs text-gray-500">
+        Built with ❤️ for habits. Smooth like a well-tuned engine.
+      </footer>
     </div>
-  );
-}
-
-export default function LoginPage() {
-  /** This is a public function. */
-  return (
-    <Suspense
-      fallback={
-        <div className="min-h-screen flex items-center justify-center text-gray-500">
-          <div className="h-10 w-10 rounded-full border-2 border-gray-300 border-t-gray-600 animate-spin" />
-        </div>
-      }
-    >
-      <LoginContent />
-    </Suspense>
   );
 }

@@ -2,18 +2,17 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useAuth } from "@/hooks/useAuth";
+import { UserButton, SignOutButton } from "@clerk/nextjs";
 
 /**
  * PUBLIC_INTERFACE
  * Navbar
  * Minimal responsive navbar for authenticated routes.
- * Shows app name, navigation links, and logout action.
+ * Shows app name, navigation links, and Clerk user controls.
  */
 export default function Navbar() {
   /** This is a public function. */
   const pathname = usePathname();
-  const { signOut } = useAuth();
 
   // Determine if a link is active (exact or prefixed path for nested routes)
   const isActive = (path: string) => {
@@ -58,14 +57,11 @@ export default function Navbar() {
             </Link>
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => signOut()}
-            className="o-btn o-btn-outline"
-            aria-label="Logout"
-          >
-            Logout
-          </button>
+        <div className="flex items-center gap-3">
+          <SignOutButton>
+            <button className="o-btn o-btn-outline" aria-label="Logout">Logout</button>
+          </SignOutButton>
+          <UserButton appearance={{ elements: { avatarBox: "h-8 w-8" } }} />
         </div>
       </nav>
     </header>
