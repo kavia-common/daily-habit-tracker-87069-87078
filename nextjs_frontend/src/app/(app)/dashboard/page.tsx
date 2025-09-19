@@ -51,12 +51,12 @@ export default function DashboardPage() {
     <div className="space-y-6 relative">
       <QuoteBanner />
 
-      <section className="rounded-lg border border-gray-200 bg-white p-6">
+      <section className="o-card p-6">
         <div className="flex items-center justify-between">
-          <h3 className="text-base font-medium text-gray-900">Your Habits</h3>
+          <h3 className="text-base font-medium" style={{ color: "var(--color-primary)" }}>Your Habits</h3>
           <button
             onClick={() => setOpenAdd(true)}
-            className="inline-flex items-center rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white hover:bg-gray-800"
+            className="o-btn o-btn-primary"
             aria-label="Add habit"
           >
             + Add

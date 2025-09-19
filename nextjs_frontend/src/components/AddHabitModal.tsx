@@ -45,20 +45,21 @@ export default function AddHabitModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/30 p-0 sm:p-4">
-      <div className="w-full sm:max-w-md rounded-t-lg sm:rounded-lg bg-white shadow-lg">
-        <div className="flex items-center justify-between border-b border-gray-200 px-4 py-3">
-          <h3 className="text-base font-medium text-gray-900">Add a habit</h3>
+      <div className="w-full sm:max-w-md sm:rounded-lg rounded-t-lg o-card" style={{ boxShadow: "var(--shadow-md)" }}>
+        <div className="flex items-center justify-between px-4 py-3" style={{ borderBottom: "1px solid var(--color-border)" }}>
+          <h3 className="text-base font-medium" style={{ color: "var(--color-primary)" }}>Add a habit</h3>
           <button
             onClick={onClose}
-            className="rounded-md p-2 text-gray-500 hover:bg-gray-100"
+            className="rounded-md p-2 hover:bg-gray-100"
             aria-label="Close"
+            style={{ color: "var(--color-secondary)" }}
           >
             ✕
           </button>
         </div>
         <form onSubmit={handleSubmit} className="p-4 space-y-4">
           <div>
-            <label htmlFor="habit" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="habit" className="block text-sm font-medium" style={{ color: "var(--color-primary)" }}>
               Habit name
             </label>
             <input
@@ -67,22 +68,22 @@ export default function AddHabitModal({
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g., Read 10 pages"
-              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 shadow-sm focus:border-gray-400 focus:outline-none focus:ring-0"
+              className="mt-1 block w-full shadow-sm"
             />
           </div>
-          {error && <p className="text-sm text-red-600">{error}</p>}
+          {error && <p className="text-sm" style={{ color: "var(--color-error)" }}>{error}</p>}
           <div className="flex items-center justify-end gap-2">
             <button
               type="button"
               onClick={onClose}
-              className="inline-flex items-center rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+              className="o-btn o-btn-outline"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={submitting}
-              className="inline-flex items-center rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white hover:bg-gray-800 disabled:opacity-60"
+              className="o-btn o-btn-primary disabled:opacity-60"
             >
               {submitting ? "Adding..." : "Add habit"}
             </button>

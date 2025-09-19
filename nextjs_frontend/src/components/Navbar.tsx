@@ -23,10 +23,10 @@ export default function Navbar() {
     }`;
 
   return (
-    <header className="w-full border-b border-gray-200 bg-white">
+    <header className="w-full bg-white border-b o-border">
       <nav className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
         <div className="flex items-center gap-6">
-          <Link href="/dashboard" className="text-lg font-semibold text-gray-900">
+          <Link href="/dashboard" className="text-lg font-semibold" style={{ color: "var(--color-accent)" }}>
             HabitFlow
           </Link>
           <div className="hidden md:flex items-center gap-1">
@@ -41,7 +41,7 @@ export default function Navbar() {
         <div className="flex items-center gap-2">
           <button
             onClick={() => signOut()}
-            className="inline-flex items-center rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+            className="o-btn o-btn-outline"
             aria-label="Logout"
           >
             Logout

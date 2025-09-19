@@ -21,7 +21,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`bg-white text-gray-900 ${inter.className}`} suppressHydrationWarning>
+      <body className={inter.className} suppressHydrationWarning style={{ background: "var(--color-bg)", color: "var(--color-primary)" }}>
         {children}
       </body>
     </html>

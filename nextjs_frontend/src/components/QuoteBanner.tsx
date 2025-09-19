@@ -20,11 +20,11 @@ export default function QuoteBanner() {
   }, []);
 
   return (
-    <div className="rounded-lg border border-gray-200 bg-gradient-to-br from-white to-gray-50 p-5">
-      <p className="text-gray-800">
+    <div className="rounded-lg o-border p-5 o-gradient" style={{ borderWidth: 1 }}>
+      <p style={{ color: "var(--color-primary)" }}>
         {quote?.text ?? "Stay consistent. Your future self will thank you."}
       </p>
-      <p className="mt-2 text-sm text-gray-500">
+      <p className="mt-2 text-sm" style={{ color: "var(--color-secondary)" }}>
         — {quote?.author ?? "HabitFlow"}
       </p>
     </div>

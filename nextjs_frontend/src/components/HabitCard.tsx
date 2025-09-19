@@ -41,15 +41,16 @@ export default function HabitCard({
   const isToday = (d: string) => d === todayYYYYMMDD();
 
   return (
-    <div className="rounded-lg border border-gray-200 bg-white p-4">
+    <div className="o-card p-4">
       <div className="flex items-start justify-between">
         <div>
-          <p className="font-medium text-gray-900">{habit.title}</p>
-          <p className="mt-1 text-xs text-gray-500">Streak: {streak}</p>
+          <p className="font-medium" style={{ color: "var(--color-primary)" }}>{habit.title}</p>
+          <p className="mt-1 text-xs" style={{ color: "var(--color-secondary)" }}>Streak: {streak}</p>
         </div>
         <button
           onClick={handleDelete}
-          className="rounded-md px-2 py-1 text-xs text-gray-500 hover:text-red-600 hover:bg-gray-50"
+          className="rounded-md px-2 py-1 text-xs hover:bg-gray-50"
+          style={{ color: "var(--color-secondary)" }}
         >
           Delete
         </button>
@@ -65,9 +66,9 @@ export default function HabitCard({
               onClick={() => handleToggle(d)}
               className={`h-10 rounded-md text-sm font-medium border transition ${
                 done
-                  ? "bg-green-50 border-green-200 text-green-700"
+                  ? "bg-emerald-50 border-emerald-200 text-emerald-700"
                   : "bg-white border-gray-300 text-gray-700 hover:bg-gray-50"
-              } ${isToday(d) ? "ring-1 ring-gray-300" : ""}`}
+              } ${isToday(d) ? "o-ring" : ""}`}
               title={d}
             >
               {d.slice(5)}{isToday(d) ? " •" : ""}
