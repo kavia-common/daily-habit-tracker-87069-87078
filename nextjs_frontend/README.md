@@ -64,6 +64,17 @@ If you want to migrate away from Supabase for data, replace the methods in `data
 - The login screen includes a modern card, playful car emoji visuals, and simple chart placeholders for an engaging but clean experience.
 - When deploying, set the Clerk keys and any Supabase variables (if still used for data).
 
+## Troubleshooting
+
+### VS Code preview shows instead of the app
+Some environments route the preview URL to `/preview.html` (e.g., `https://<host>:3000/preview.html`), which is a VS Code web preview page. This is not the Next.js app.
+
+Fix:
+- Use the app root instead: `http://localhost:3000/` (or your container URL ending with `/`).
+- We added a route at `/preview.html` that redirects to `/` so even if the preview points there, you’ll land in HabitFlow.
+
+If you still see the VS Code interface, ensure the dev server is running (`npm run dev`) and that you’re visiting `/` or `/login` and not a static `/preview.html` page.
+
 ## Optional improvements
 - Migrate data from Supabase to your preferred backend; remove `@supabase/*` packages and envs when done.
 - Add analytics (e.g., Vercel Analytics, PostHog).
